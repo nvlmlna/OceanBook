@@ -1,0 +1,141 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+
+export default function AddBook() {
+  const [formData, setFormData] = useState({
+    title: "",
+    author: "",
+    category: "",
+    price: "",
+    stock: "",
+    description: "",
+    image: "",
+  });
+  const navigate = useNavigate();
+  // Di AddBook.jsx (atau komponen edit)
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user?.isAdmin) {
+      alert("Anda tidak memiliki akses admin!");
+      navigate("/");
+    }
+  }, [navigate]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post("/books", {
+        ...formData,
+        price: Number(formData.price),
+        stock: Number(formData.stock),
+      });
+      alert("Buku berhasil ditambahkan!");
+      navigate("/");
+    } catch (err) {
+      alert("Gagal menambah buku. Periksa input Anda.");
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4 md:p-6">
+      <h2 className="text-2xl font-bold mb-6">Tambah Buku Baru</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow-md max-w-2xl"
+      >
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Judul *</label>
+          <input
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Penulis</label>
+          <input
+            name="author"
+            value={formData.author}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Kategori</label>
+          <input
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Harga (angka) *</label>
+          <input
+            name="price"
+            type="number"
+            value={formData.price}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Stok</label>
+          <input
+            name="stock"
+            type="number"
+            value={formData.stock}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Deskripsi</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+            rows="3"
+          ></textarea>
+        </div>
+        <div className="mb-6">
+          <label className="block mb-1 font-medium">
+            URL Gambar (opsional)
+          </label>
+          <input
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+
+        <div className="flex space-x-3">
+          <button
+            type="submit"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Simpan Buku
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="bg-gray-500 text-white px-4 py-2 rounded"
+          >
+            Batal
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
