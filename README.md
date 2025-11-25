@@ -1,18 +1,54 @@
 # Toko Buku
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+OceanBook adalah web bookstore sederhana dengan fitur autentikasi, manajemen buku, dan keranjang belanja. Dibangun menggunakan React (frontend) dan Express + MySQL (backend).
+Website ini dibuat untuk memudahkan pengguna dalam melihat katalog buku, membeli buku, mengelola keranjang, serta menyediakan halaman admin untuk menambah data buku.
 
-Currently, two official plugins are available:
+## Fitur Utama
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🔐 1. Autentikasi User
 
-## React Compiler
+- Register
+- Login
+- Logout
+- Validasi akses untuk fitur tertentu
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+📚 2. Manajemen Buku
 
-## Expanding the ESLint configuration
+- Melihat daftar buku
+- Melihat detail buku
+- Admin dapat menambahkan buku
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🛒 3. Keranjang Belanja
 
-(Note : Ngulang)
+- Menambahkan buku ke keranjang
+- Halaman khusus /cart
+- Hanya bisa digunakan jika user sudah login
+
+🖥️ 4. Role Admin
+
+- Admin dapat menambah buku baru
+- Tampilannya sedikit berbeda dari user biasa
+
+🎨 5. UI Modern
+
+- Navbar responsif dengan menu hamburger
+- Tema gradasi biru laut (teal/cyan)
+- Tampilan bersih dan mobile-friendly
+
+## ⚙️ Tech Stack
+
+Frontend
+
+- React + Vite
+- TailwindCSS
+- React Router DOM
+
+Backend
+
+- Node.js
+- Express.js
+- MySQL
+
+Database
+
+- phpMyAdmin / MySQL lokal

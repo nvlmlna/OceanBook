@@ -4,8 +4,9 @@ const {
   getBookById,
   createBook,
   updateBook,
-  deleteBook
-} = reqauire('../controllers/bookcontroller');
+  deleteBook,
+  orderBook
+} = require('../controllers/bookcontroller');
 
 const router = express.Router();
 
