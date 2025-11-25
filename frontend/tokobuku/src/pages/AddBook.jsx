@@ -143,14 +143,14 @@ export default function AddBook() {
         <div className="flex space-x-3">
           <button
             type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            className="bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
           >
             Simpan Buku
           </button>
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
+            className="bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
           >
             Batal
           </button>
