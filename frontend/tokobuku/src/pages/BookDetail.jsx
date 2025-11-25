@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import Swal from "sweetalert2";
 
 export default function BookDetail() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -14,39 +15,68 @@ export default function BookDetail() {
     const fetchBook = async () => {
       try {
         const res = await api.get(`/books/${id}`);
+
         if (res.data?.success) {
           setBook(res.data.data);
+        } else {
+          throw new Error("Book not found");
         }
       } catch (err) {
-        alert("Buku tidak ditemukan");
-        navigate("/");
+        Swal.fire({
+          title: "Buku Tidak Ditemukan",
+          text: "Buku mungkin sudah dihapus atau tidak tersedia.",
+          icon: "error",
+          confirmButtonColor: "#d33",
+        }).then(() => {
+          navigate("/");
+        });
       } finally {
         setLoading(false);
       }
     };
+
     fetchBook();
   }, [id, navigate]);
 
   const handleDelete = async () => {
-    if (
-      window.confirm(
-        "⚠️ Yakin ingin menghapus buku ini?\nAksi ini tidak bisa dibatalkan."
-      )
-    ) {
-      try {
-        await api.delete(`/books/${id}`);
-        alert("✅ Buku berhasil dihapus");
-        navigate("/");
-      } catch (err) {
-        alert("❌ Gagal menghapus buku");
+    Swal.fire({
+      title: "Yakin ingin menghapus buku ini?",
+      text: "Tindakan ini tidak bisa dibatalkan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, hapus!",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await api.delete(`/books/${id}`);
+
+          Swal.fire({
+            title: "Berhasil!",
+            text: "Buku berhasil dihapus.",
+            icon: "success",
+            confirmButtonColor: "#4F46E5",
+          }).then(() => {
+            navigate("/");
+          });
+        } catch (err) {
+          Swal.fire({
+            title: "Gagal Menghapus",
+            text: "Terjadi kesalahan saat menghapus buku.",
+            icon: "error",
+            confirmButtonColor: "#d33",
+          });
+        }
       }
-    }
+    });
   };
 
   if (loading) {
     return (
       <div className="container mx-auto p-12 text-center">
-        <div className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
+        <div className="inline-block h-10 w-10 animate-spin rounded-full border-4 border-cyan-600 border-t-transparent"></div>
       </div>
     );
   }
@@ -54,10 +84,10 @@ export default function BookDetail() {
   if (!book) return null;
 
   return (
-    <div className="container mx-auto p-4 md:p-6 max-w-4xl">
+    <div className="container mx-auto p-4 md:p-6 ">
       <button
         onClick={() => navigate(-1)}
-        className="mb-6 flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
+        className="mb-6 flex items-center text-cyan-600 hover:text-cyan-800 font-medium"
       >
         ← Kembali ke Daftar
       </button>
@@ -67,6 +97,7 @@ export default function BookDetail() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {book.title}
           </h1>
+          <img src={book.image || "default-image.jpg"} alt={book.title} className="w-80 mb-4 rounded" />
           <p className="text-lg text-gray-600 mb-4">
             oleh {book.author || "Penulis tidak diketahui"}
           </p>
@@ -78,7 +109,7 @@ export default function BookDetail() {
             </div>
             <div>
               <p className="text-sm text-gray-500">HARGA</p>
-              <p className="text-2xl font-bold text-indigo-600">
+              <p className="text-2xl font-bold text-cyan-600">
                 Rp {book.price?.toLocaleString() || "0"}
               </p>
             </div>
@@ -102,32 +133,102 @@ export default function BookDetail() {
               <>
                 <button
                   onClick={() => navigate(`/edit/${book.id}`)}
-                  className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg transition"
+                  className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
                 >
-                  🖊️ Edit Buku
+                  Edit Buku
                 </button>
 
                 <button
                   onClick={handleDelete}
-                  className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition"
+                  className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
                 >
-                  🗑️ Hapus Buku
+                  Hapus Buku
                 </button>
               </>
             ) : (
               <>
                 <button
-                  onClick={() => alert("📦 Buku dimasukkan ke keranjang!")}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition"
+                  onClick={() => {
+                  Swal.fire({
+                    title: "Berhasil!",
+                    text: "Buku telah dimasukkan ke keranjang.",
+                    icon: "success",
+                    confirmButtonColor: "#4F46E5",
+                  });
+                }}
+
+                  className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
                 >
-                  🛒 Masukkan Keranjang
+                  Masukkan Keranjang
                 </button>
 
                 <button
-                  onClick={() => alert("📨 Kamu memesan buku ini!")}
-                  className="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition"
+                  onClick={() => {
+                  let qty = 1; // default quantity
+                  const max = book.stock; // biar ga lebih dari stok
+
+                  Swal.fire({
+                    title: "Pesan Buku",
+                    html: `
+                      <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:15px;">
+                        <button id="minus" style="width:40px;height:40px;font-size:20px;border-radius:8px;border:1px solid #ccc;">-</button>
+                        <span id="qty" style="font-size:20px;font-weight:bold;">1</span>
+                        <button id="plus" style="width:40px;height:40px;font-size:20px;border-radius:8px;border:1px solid #ccc;">+</button>
+                      </div>
+                      <p style="margin-top:10px;font-size:14px;color:gray;">Stok tersedia: ${book.stock}</p>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: "Pesan Sekarang",
+                    cancelButtonText: "Batal",
+                    confirmButtonColor: "#33cfeb",
+                    cancelButtonColor: "#d33",
+                    didOpen: () => {
+                      const minus = Swal.getPopup().querySelector("#minus");
+                      const plus = Swal.getPopup().querySelector("#plus");
+                      const qtyText = Swal.getPopup().querySelector("#qty");
+
+                      minus.addEventListener("click", () => {
+                        if (qty > 1) {
+                          qty--;
+                          qtyText.textContent = qty;
+                        }
+                      });
+
+                      plus.addEventListener("click", () => {
+                        if (qty < max) {
+                          qty++;
+                          qtyText.textContent = qty;
+                        }
+                      });
+                    }
+                  }).then(async (result) => {
+                    if (result.isConfirmed) {
+                      try {
+                        await api.put(`/books/${book.id}/order`, { quantity: qty });
+
+                        Swal.fire({
+                          title: "Berhasil!",
+                          text: `Kamu memesan ${qty} buku.`,
+                          icon: "success",
+                          confirmButtonColor: "#33cfeb",
+                        });
+
+                        setBook({ ...book, stock: book.stock - qty });
+                      } catch (err) {
+                        Swal.fire({
+                          title: "Gagal",
+                          text: "Stok tidak cukup atau server error.",
+                          icon: "error",
+                          confirmButtonColor: "#33cfeb",
+                        });
+                      }
+                    }
+                  });
+                }}
+
+                  className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
                 >
-                  📘 Pesan Buku
+                  Pesan Buku
                 </button>
               </>
             )}

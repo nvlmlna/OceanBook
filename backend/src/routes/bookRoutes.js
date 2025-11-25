@@ -5,7 +5,7 @@ const {
   createBook,
   updateBook,
   deleteBook
-} = require('../controllers/bookController');
+} = reqauire('../controllers/bookcontroller');
 
 const router = express.Router();
 
@@ -17,5 +17,7 @@ router.get('/:id', getBookById); // Get single book
 router.post('/', createBook);
 router.put('/:id', updateBook);
 router.delete('/:id', deleteBook);
+router.put('/:id/order', orderBook);
+
 
 module.exports = router;

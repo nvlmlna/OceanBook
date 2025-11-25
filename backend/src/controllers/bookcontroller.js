@@ -86,6 +86,43 @@ const updateBook = async (req, res) => {
   }
 };
 
+// ORDER / Reduce Stock
+const orderBook = async (req, res) => {
+  const { id } = req.params;
+  const { quantity } = req.body;
+
+  try {
+    // Ambil stok sekarang
+    const [rows] = await pool.execute('SELECT stock FROM daftarbuku WHERE id = ?', [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Book not found.' });
+    }
+
+    const currentStock = rows[0].stock;
+
+    // Jika stok tidak cukup
+    if (currentStock < quantity) {
+      return res.status(400).json({ success: false, message: 'Stock not enough.' });
+    }
+
+    // Update stok
+    await pool.execute('UPDATE daftarbuku SET stock = ? WHERE id = ?', [
+      currentStock - quantity,
+      id
+    ]);
+
+    res.json({
+      success: true,
+      message: 'Order successful.',
+      data: { id, ordered: quantity, remainingStock: currentStock - quantity }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error.' });
+  }
+};
+
+
 // DELETE Book
 const deleteBook = async (req, res) => {
   const { id } = req.params;
@@ -106,5 +143,6 @@ module.exports = {
   getBookById,
   createBook,
   updateBook,
-  deleteBook
+  deleteBook,
+  orderBook
 };

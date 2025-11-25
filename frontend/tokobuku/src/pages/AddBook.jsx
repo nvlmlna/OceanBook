@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import Swal from "sweetalert2";
 
 export default function AddBook() {
   const [formData, setFormData] = useState({
@@ -12,13 +13,19 @@ export default function AddBook() {
     description: "",
     image: "",
   });
+
   const navigate = useNavigate();
-  // Di AddBook.jsx (atau komponen edit)
+
+  // Cek admin
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?.isAdmin) {
-      alert("Anda tidak memiliki akses admin!");
-      navigate("/");
+      Swal.fire({
+        title: "Akses Ditolak",
+        text: "Anda tidak memiliki akses admin!",
+        icon: "error",
+        confirmButtonColor: "#33cfeb",
+      }).then(() => navigate("/"));
     }
   }, [navigate]);
 
@@ -28,19 +35,32 @@ export default function AddBook() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       await api.post("/books", {
         ...formData,
         price: Number(formData.price),
         stock: Number(formData.stock),
       });
-      alert("Buku berhasil ditambahkan!");
-      navigate("/");
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Buku berhasil ditambahkan.",
+        icon: "success",
+        confirmButtonColor: "#33cfeb",
+      }).then(() => navigate("/"));
     } catch (err) {
-      alert("Gagal menambah buku. Periksa input Anda.");
+      Swal.fire({
+        title: "Gagal Menambahkan Buku",
+        text: "Periksa kembali input atau server Anda.",
+        icon: "error",
+        confirmButtonColor: "#33cfeb",
+      });
       console.error(err);
     }
   };
+
+
 
   return (
     <div className="container mx-auto p-4 md:p-6">

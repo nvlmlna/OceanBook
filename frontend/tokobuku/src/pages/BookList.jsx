@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import SearchBar from '../components/SearchBar';
+import Navbar from "../components/Navbar";
+
 
 export default function BookList() {
   const [books, setBooks] = useState([]);
@@ -22,7 +24,9 @@ export default function BookList() {
         books.filter(
           (book) =>
             book.title.toLowerCase().includes(term) ||
-            (book.category && book.category.toLowerCase().includes(term))
+            (book.category && book.category.toLowerCase().includes(term))||
+            (book.author && book.author.toLowerCase().includes(term)) ||
+            (book.description && book.description.toLowerCase().includes(term))
         )
       );
     }
@@ -72,9 +76,10 @@ export default function BookList() {
               className="card-hover bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col"
             >
               <div className="p-5 flex-grow">
+                <img src={book.image || "default-image.jpg"} alt={book.title} className="w-full  object-cover mb-4 rounded" />
                 <h3 className="font-bold text-lg text-gray-800 line-clamp-1">{book.title}</h3>
                 <p className="text-sm text-gray-600 mt-1">Penulis: {book.author || '–'}</p>
-                <p className="text-sm text-indigo-600 mt-2 font-semibold">
+                <p className="text-sm text-cyan-600 mt-2 font-semibold">
                   Rp {book.price?.toLocaleString() || '0'}
                 </p>
                 <div className="mt-3 flex justify-between items-center text-xs text-gray-500">
@@ -85,7 +90,7 @@ export default function BookList() {
               <div className="px-5 pb-5">
                 <Link
                   to={`/books/${book.id}`}
-                  className="w-full block text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition"
+                  className="w-full block text-center bg-cyan-500 hover:bg-cyan-300 text-white py-2 rounded-lg font-medium transition"
                 >
                   Lihat Detail
                 </Link>

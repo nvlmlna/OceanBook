@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import Navbar from "./components/navbar.jsx";
+import Navbar from "./components/Navbar.jsx";
 import BookList from "./pages/BookList";
 import BookDetail from "./pages/BookDetail";
 import AddBook from "./pages/AddBook";

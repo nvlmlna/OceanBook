@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import Swal from "sweetalert2";
 
 export default function EditBook() {
   const { id } = useParams();
@@ -15,23 +16,34 @@ export default function EditBook() {
     image: "",
   });
 
+  // Fetch data buku
   useEffect(() => {
     const fetchBook = async () => {
       try {
         const res = await api.get(`/books/${id}`);
         setFormData(res.data.data);
       } catch (err) {
-        navigate("/");
+        Swal.fire({
+          title: "Buku Tidak Ditemukan",
+          text: "Buku mungkin sudah dihapus atau ID salah.",
+          icon: "error",
+          confirmButtonColor: "#33cfeb",
+        }).then(() => navigate("/"));
       }
     };
     fetchBook();
   }, [id, navigate]);
 
+  // Cek admin
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?.isAdmin) {
-      alert("Anda tidak memiliki akses admin!");
-      navigate("/");
+      Swal.fire({
+        title: "Akses Ditolak",
+        text: "Anda tidak memiliki akses admin!",
+        icon: "error",
+        confirmButtonColor: "#33cfeb",
+      }).then(() => navigate("/"));
     }
   }, [navigate]);
 
@@ -41,18 +53,31 @@ export default function EditBook() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       await api.put(`/books/${id}`, {
         ...formData,
         price: Number(formData.price),
         stock: Number(formData.stock),
       });
-      alert("Buku berhasil diupdate!");
-      navigate(`/books/${id}`);
+
+      Swal.fire({
+        title: "Berhasil!",
+        text: "Buku berhasil diupdate.",
+        icon: "success",
+        confirmButtonColor: "#33cfeb",
+      }).then(() => navigate(`/books/${id}`));
     } catch (err) {
-      alert("Gagal mengupdate buku.");
+      Swal.fire({
+        title: "Gagal Mengupdate",
+        text: "Terjadi kesalahan saat mengupdate buku.",
+        icon: "error",
+        confirmButtonColor: "#33cfeb",
+      });
     }
   };
+
+
 
   return (
     <div className="container mx-auto p-4 md:p-6">
@@ -135,14 +160,14 @@ export default function EditBook() {
         <div className="flex space-x-3">
           <button
             type="submit"
-            className="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700"
+            className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
           >
             Update Buku
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="bg-gray-500 text-white px-4 py-2 rounded"
+            className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-white hover:bg-gradient-to-l from-cyan-500 to-white text-cyan-800 font-semibold px-4 py-2 rounded-lg hover:bg-white transition duration-200 shadow-md"
           >
             Batal
           </button>
