@@ -7,6 +7,7 @@ import AddBook from "./pages/AddBook";
 import EditBook from "./pages/EditBook";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
+import Cart from "./components/cart";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/edit/:id" element={<EditBook />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         </main>
       </div>
