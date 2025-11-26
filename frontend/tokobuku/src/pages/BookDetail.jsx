@@ -45,7 +45,7 @@ export default function BookDetail() {
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      cancelButtonColor: "#33cfeb",
       confirmButtonText: "Ya, hapus!",
       cancelButtonText: "Batal",
     }).then(async (result) => {
@@ -57,7 +57,7 @@ export default function BookDetail() {
             title: "Berhasil!",
             text: "Buku berhasil dihapus.",
             icon: "success",
-            confirmButtonColor: "#4F46E5",
+            confirmButtonColor: "#33cfeb",
           }).then(() => {
             navigate("/");
           });
@@ -153,7 +153,7 @@ export default function BookDetail() {
                     title: "Berhasil!",
                     text: "Buku telah dimasukkan ke keranjang.",
                     icon: "success",
-                    confirmButtonColor: "#4F46E5",
+                    confirmButtonColor: "#33cfeb",
                   });
                 }}
 
